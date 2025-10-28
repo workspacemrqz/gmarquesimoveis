@@ -4,7 +4,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Separator } from "@/components/ui/separator";
 import { Alert, AlertDescription } from "@/components/ui/alert";
-import { Dialog, DialogContent, DialogTitle, DialogDescription } from "@/components/ui/dialog";
+import * as DialogPrimitive from "@radix-ui/react-dialog";
 import { 
   Building2, 
   Bed, 
@@ -747,150 +747,137 @@ export default function PropertyDetails() {
         </div>
       </div>
 
-      {/* Modal de Visualização de Imagens */}
-      <Dialog open={isImageModalOpen} onOpenChange={setIsImageModalOpen}>
-        <DialogContent className="!fixed !inset-0 !w-screen !h-screen !max-w-full !p-0 !m-0 !bg-black/95 !border-0 !rounded-none [&>button]:hidden !z-[9999]">
-          {/* Título e descrição ocultos para acessibilidade */}
-          <DialogTitle className="sr-only">
-            Visualização de Imagens - {property?.title}
-          </DialogTitle>
-          <DialogDescription className="sr-only">
-            Use as setas do teclado ou arraste para navegar entre as imagens. Pressione ESC para fechar.
-          </DialogDescription>
-          <div className="fixed inset-0 w-full h-full flex flex-col">
-            {/* Header com botão fechar - sempre visível */}
-            <div 
-              className="fixed top-0 left-0 right-0 flex items-center justify-between px-4 h-16 bg-gradient-to-b from-black/90 to-black/50"
-              style={{ 
-                zIndex: 99999,
-                paddingTop: 'env(safe-area-inset-top, 0px)'
-              }}
-            >
-              <div className="text-white/90 text-sm font-medium truncate max-w-[60%] pt-2">
-                {property?.title}
-              </div>
-              <button
+      {/* Modal de Visualização de Imagens - Fullscreen */}
+      <DialogPrimitive.Root open={isImageModalOpen} onOpenChange={setIsImageModalOpen}>
+        <DialogPrimitive.Portal>
+          <DialogPrimitive.Overlay className="fixed inset-0 z-50 bg-black/95 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0" />
+          <DialogPrimitive.Content className="fixed inset-0 z-50 flex flex-col bg-black outline-none">
+            {/* Título e descrição ocultos para acessibilidade */}
+            <DialogPrimitive.Title className="sr-only">
+              Visualização de Imagens - {property?.title}
+            </DialogPrimitive.Title>
+            <DialogPrimitive.Description className="sr-only">
+              Use as setas do teclado ou arraste para navegar entre as imagens. Pressione ESC para fechar.
+            </DialogPrimitive.Description>
+
+            {/* Container relativo para posicionamento absoluto dos controles */}
+            <div className="relative w-full h-full flex items-center justify-center">
+              {/* Área clicável para fechar (backdrop) */}
+              <div 
+                className="absolute inset-0 flex items-center justify-center cursor-pointer"
                 onClick={() => setIsImageModalOpen(false)}
-                className="mt-2 p-3 rounded-full bg-white/30 backdrop-blur-md hover:bg-white/40 active:bg-white/50 transition-all duration-200 flex-shrink-0 shadow-2xl border border-white/20"
-                data-testid="button-close-modal"
-                aria-label="Fechar visualização"
-                style={{ zIndex: 99999 }}
+                data-testid="modal-backdrop"
               >
-                <X className="h-7 w-7 text-white" strokeWidth={3} />
-              </button>
-            </div>
-
-            {/* Área da imagem - altura calculada considerando header (64px) e footer (80px) */}
-            <div 
-              className="absolute inset-0 flex items-center justify-center cursor-pointer"
-              style={{
-                paddingTop: '64px',
-                paddingBottom: '80px',
-                paddingLeft: '16px',
-                paddingRight: '16px'
-              }}
-              onClick={() => setIsImageModalOpen(false)}
-              data-testid="modal-backdrop"
-            >
-              {images.length > 0 && (
-                <div 
-                  className="relative w-full h-full flex items-center justify-center"
-                  onTouchStart={handleTouchStart}
-                  onTouchMove={handleTouchMove}
-                  onTouchEnd={handleTouchEnd}
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <img 
-                    src={images[modalImageIndex]} 
-                    alt={`${property.title} - Imagem ${modalImageIndex + 1}`}
-                    className="w-full h-full object-contain cursor-default"
+                {/* Container da imagem */}
+                {images.length > 0 && (
+                  <div 
+                    className="relative w-full h-full flex items-center justify-center px-4 py-20"
+                    onTouchStart={handleTouchStart}
+                    onTouchMove={handleTouchMove}
+                    onTouchEnd={handleTouchEnd}
+                    onClick={(e) => e.stopPropagation()}
                     style={{
-                      maxWidth: '100%',
-                      maxHeight: '100%'
+                      paddingTop: 'max(80px, calc(env(safe-area-inset-top) + 16px))',
+                      paddingBottom: 'max(80px, calc(env(safe-area-inset-bottom) + 16px))'
                     }}
-                    draggable="false"
-                    onContextMenu={(e) => e.preventDefault()}
-                    onDragStart={(e) => e.preventDefault()}
-                  />
-                  
-                  {/* Watermark overlay in modal */}
-                  {settings?.watermarkEnabled === 'true' && settings?.watermarkImage && (
-                    <div 
-                      className="absolute inset-0 flex items-center justify-center pointer-events-none"
-                      style={{
-                        opacity: settings.watermarkOpacity ? parseInt(settings.watermarkOpacity) / 100 : 0.3,
-                      }}
-                    >
-                      <img
-                        src={settings.watermarkImage}
-                        alt="Marca d'água"
-                        className="object-contain"
-                        draggable="false"
-                        onContextMenu={(e) => e.preventDefault()}
-                        onDragStart={(e) => e.preventDefault()}
+                  >
+                    <img 
+                      src={images[modalImageIndex]} 
+                      alt={`${property.title} - Imagem ${modalImageIndex + 1}`}
+                      className="w-full h-full object-contain"
+                      draggable="false"
+                      onContextMenu={(e) => e.preventDefault()}
+                      onDragStart={(e) => e.preventDefault()}
+                    />
+                    
+                    {/* Watermark overlay */}
+                    {settings?.watermarkEnabled === 'true' && settings?.watermarkImage && (
+                      <div 
+                        className="absolute inset-0 flex items-center justify-center pointer-events-none"
                         style={{
-                          width: `${settings.watermarkSize ? parseInt(settings.watermarkSize) : 20}%`,
-                          maxWidth: '100%',
-                          maxHeight: '100%',
-                          userSelect: 'none',
+                          opacity: settings.watermarkOpacity ? parseInt(settings.watermarkOpacity) / 100 : 0.3,
                         }}
-                      />
-                    </div>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {/* Controles de navegação - setas modernas */}
-            {images.length > 1 && (
-              <>
-                {/* Botão Anterior */}
-                <button
-                  onClick={handlePreviousImage}
-                  className="fixed left-2 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/40 backdrop-blur-md border-2 border-white/50 hover:bg-white/50 active:bg-white/60 transition-all duration-200 shadow-2xl"
-                  style={{ zIndex: 99998 }}
-                  data-testid="button-previous-image"
-                  aria-label="Imagem anterior"
-                >
-                  <ChevronLeft className="h-7 w-7 text-white" strokeWidth={3.5} />
-                </button>
-
-                {/* Botão Próximo */}
-                <button
-                  onClick={handleNextImage}
-                  className="fixed right-2 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/40 backdrop-blur-md border-2 border-white/50 hover:bg-white/50 active:bg-white/60 transition-all duration-200 shadow-2xl"
-                  style={{ zIndex: 99998 }}
-                  data-testid="button-next-image"
-                  aria-label="Próxima imagem"
-                >
-                  <ChevronRight className="h-7 w-7 text-white" strokeWidth={3.5} />
-                </button>
-              </>
-            )}
-
-            {/* Footer com contador - sempre visível */}
-            <div 
-              className="fixed bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/90 to-black/50"
-              style={{ 
-                zIndex: 99999,
-                paddingBottom: 'env(safe-area-inset-bottom, 0px)'
-              }}
-            >
-              <div className="px-4 pb-4 pt-2">
-                {/* Contador centralizado */}
-                <div className="flex items-center justify-center">
-                  <div className="px-6 py-3 rounded-full bg-white/40 backdrop-blur-md border-2 border-white/50 shadow-2xl">
-                    <span className="text-white text-lg font-bold">
-                      {modalImageIndex + 1} de {images.length}
-                    </span>
+                      >
+                        <img
+                          src={settings.watermarkImage}
+                          alt="Marca d'água"
+                          className="object-contain"
+                          draggable="false"
+                          onContextMenu={(e) => e.preventDefault()}
+                          onDragStart={(e) => e.preventDefault()}
+                          style={{
+                            width: `${settings.watermarkSize ? parseInt(settings.watermarkSize) : 20}%`,
+                            maxWidth: '100%',
+                            maxHeight: '100%',
+                            userSelect: 'none',
+                          }}
+                        />
+                      </div>
+                    )}
                   </div>
+                )}
+              </div>
+
+              {/* Header com botão fechar */}
+              <div 
+                className="absolute top-0 left-0 right-0 flex items-center justify-between px-4 h-16 bg-gradient-to-b from-black/80 to-transparent"
+                style={{ 
+                  paddingTop: 'max(8px, env(safe-area-inset-top))'
+                }}
+              >
+                <div className="text-white/90 text-sm font-medium truncate max-w-[60%]">
+                  {property?.title}
+                </div>
+                <button
+                  onClick={() => setIsImageModalOpen(false)}
+                  className="p-3 rounded-full bg-white/30 backdrop-blur-md hover:bg-white/40 active:bg-white/50 transition-colors shadow-2xl border border-white/20"
+                  data-testid="button-close-modal"
+                  aria-label="Fechar visualização"
+                >
+                  <X className="h-6 w-6 text-white" strokeWidth={2.5} />
+                </button>
+              </div>
+
+              {/* Setas de navegação */}
+              {images.length > 1 && (
+                <>
+                  <button
+                    onClick={handlePreviousImage}
+                    className="absolute left-2 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/30 backdrop-blur-md border border-white/30 hover:bg-white/40 active:bg-white/50 transition-colors shadow-2xl"
+                    data-testid="button-previous-image"
+                    aria-label="Imagem anterior"
+                  >
+                    <ChevronLeft className="h-7 w-7 text-white" strokeWidth={2.5} />
+                  </button>
+
+                  <button
+                    onClick={handleNextImage}
+                    className="absolute right-2 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/30 backdrop-blur-md border border-white/30 hover:bg-white/40 active:bg-white/50 transition-colors shadow-2xl"
+                    data-testid="button-next-image"
+                    aria-label="Próxima imagem"
+                  >
+                    <ChevronRight className="h-7 w-7 text-white" strokeWidth={2.5} />
+                  </button>
+                </>
+              )}
+
+              {/* Footer com contador */}
+              <div 
+                className="absolute bottom-0 left-0 right-0 flex items-center justify-center pb-6 bg-gradient-to-t from-black/80 to-transparent"
+                style={{ 
+                  paddingBottom: 'max(24px, calc(env(safe-area-inset-bottom) + 8px))'
+                }}
+              >
+                <div className="px-5 py-2.5 rounded-full bg-white/30 backdrop-blur-md border border-white/30 shadow-2xl">
+                  <span className="text-white text-base font-semibold">
+                    {modalImageIndex + 1} de {images.length}
+                  </span>
                 </div>
               </div>
             </div>
-
-          </div>
-        </DialogContent>
-      </Dialog>
+          </DialogPrimitive.Content>
+        </DialogPrimitive.Portal>
+      </DialogPrimitive.Root>
       </>
       )}
       <Footer />
