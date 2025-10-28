@@ -755,22 +755,30 @@ export default function PropertyDetails() {
             Use as setas do teclado ou arraste para navegar entre as imagens. Pressione ESC para fechar.
           </DialogDescription>
           <div className="relative w-full h-full flex flex-col">
-            {/* Header com botão fechar */}
-            <div className="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-6 py-5 bg-gradient-to-b from-black/60 to-transparent">
-              <div className="text-white/90 text-sm font-medium">
+            {/* Header com botão fechar - altura fixa */}
+            <div className="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-4 sm:px-6 h-16 bg-gradient-to-b from-black/60 to-transparent">
+              <div className="text-white/90 text-sm font-medium truncate max-w-[60%]">
                 {property?.title}
               </div>
               <button
                 onClick={() => setIsImageModalOpen(false)}
-                className="p-2.5 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all duration-200"
+                className="p-2.5 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all duration-200 flex-shrink-0"
                 data-testid="button-close-modal"
               >
                 <X className="h-5 w-5 text-white" />
               </button>
             </div>
 
-            {/* Área da imagem */}
-            <div className="flex-1 flex items-center justify-center px-4 md:px-20 py-20">
+            {/* Área da imagem - altura calculada considerando header (64px) e footer (80px) */}
+            <div 
+              className="absolute inset-0 flex items-center justify-center"
+              style={{
+                paddingTop: '64px',
+                paddingBottom: '80px',
+                paddingLeft: '16px',
+                paddingRight: '16px'
+              }}
+            >
               {images.length > 0 && (
                 <div 
                   className="relative w-full h-full flex items-center justify-center"
@@ -781,11 +789,14 @@ export default function PropertyDetails() {
                   <img 
                     src={images[modalImageIndex]} 
                     alt={`${property.title} - Imagem ${modalImageIndex + 1}`}
-                    className="max-w-full max-h-full object-contain"
+                    className="w-full h-full object-contain"
+                    style={{
+                      maxWidth: '100%',
+                      maxHeight: '100%'
+                    }}
                     draggable="false"
                     onContextMenu={(e) => e.preventDefault()}
                     onDragStart={(e) => e.preventDefault()}
-                    style={{ userSelect: 'none' }}
                   />
                   
                   {/* Watermark overlay in modal */}
@@ -816,35 +827,37 @@ export default function PropertyDetails() {
               )}
             </div>
 
-            {/* Controles de navegação */}
+            {/* Controles de navegação - setas modernas */}
             {images.length > 1 && (
               <>
                 {/* Botão Anterior */}
                 <button
                   onClick={handlePreviousImage}
-                  className="absolute left-4 md:left-6 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 hover:scale-110 transition-all duration-200 z-40"
+                  className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 p-3 sm:p-4 rounded-xl bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-md border border-white/30 hover:from-white/30 hover:to-white/20 hover:border-white/40 hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg hover:shadow-xl z-40 group"
                   data-testid="button-previous-image"
+                  aria-label="Imagem anterior"
                 >
-                  <ChevronLeft className="h-6 w-6 md:h-7 md:w-7 text-white" />
+                  <ChevronLeft className="h-6 w-6 sm:h-8 sm:w-8 text-white drop-shadow-md group-hover:drop-shadow-lg transition-all" strokeWidth={2.5} />
                 </button>
 
                 {/* Botão Próximo */}
                 <button
                   onClick={handleNextImage}
-                  className="absolute right-4 md:right-6 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 hover:scale-110 transition-all duration-200 z-40"
+                  className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 p-3 sm:p-4 rounded-xl bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-md border border-white/30 hover:from-white/30 hover:to-white/20 hover:border-white/40 hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg hover:shadow-xl z-40 group"
                   data-testid="button-next-image"
+                  aria-label="Próxima imagem"
                 >
-                  <ChevronRight className="h-6 w-6 md:h-7 md:w-7 text-white" />
+                  <ChevronRight className="h-6 w-6 sm:h-8 sm:w-8 text-white drop-shadow-md group-hover:drop-shadow-lg transition-all" strokeWidth={2.5} />
                 </button>
               </>
             )}
 
-            {/* Footer com contador */}
-            <div className="absolute bottom-0 left-0 right-0 z-50 bg-gradient-to-t from-black/60 to-transparent">
-              <div className="px-6 py-5">
+            {/* Footer com contador - altura fixa */}
+            <div className="absolute bottom-0 left-0 right-0 z-50 h-20 bg-gradient-to-t from-black/60 to-transparent">
+              <div className="px-4 sm:px-6 py-4 sm:py-5">
                 {/* Contador centralizado */}
                 <div className="flex items-center justify-center">
-                  <div className="px-4 py-2 rounded-full bg-white/10 backdrop-blur-md">
+                  <div className="px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
                     <span className="text-white text-sm font-medium">
                       {modalImageIndex + 1} de {images.length}
                     </span>
