@@ -749,7 +749,7 @@ export default function PropertyDetails() {
 
       {/* Modal de Visualização de Imagens */}
       <Dialog open={isImageModalOpen} onOpenChange={setIsImageModalOpen}>
-        <DialogContent className="max-w-full w-screen h-screen p-0 overflow-hidden bg-black/98 backdrop-blur-sm border-0 rounded-none">
+        <DialogContent className="max-w-full w-screen h-screen p-0 overflow-hidden bg-black/98 backdrop-blur-sm border-0 rounded-none [&>button]:hidden">
           {/* Título e descrição ocultos para acessibilidade */}
           <DialogTitle className="sr-only">
             Visualização de Imagens - {property?.title}
@@ -758,17 +758,24 @@ export default function PropertyDetails() {
             Use as setas do teclado ou arraste para navegar entre as imagens. Pressione ESC para fechar.
           </DialogDescription>
           <div className="relative w-full h-full flex flex-col">
-            {/* Header com botão fechar - altura fixa */}
-            <div className="absolute top-0 left-0 right-0 z-50 flex items-center justify-between px-4 sm:px-6 h-16 bg-gradient-to-b from-black/60 to-transparent">
+            {/* Header com botão fechar - altura fixa com safe area */}
+            <div 
+              className="absolute top-0 left-0 right-0 flex items-center justify-between px-4 sm:px-6 h-16 bg-gradient-to-b from-black/80 to-transparent pointer-events-none"
+              style={{ 
+                zIndex: 9999,
+                paddingTop: 'max(env(safe-area-inset-top), 0.5rem)'
+              }}
+            >
               <div className="text-white/90 text-sm font-medium truncate max-w-[60%]">
                 {property?.title}
               </div>
               <button
                 onClick={() => setIsImageModalOpen(false)}
-                className="p-2.5 rounded-full bg-white/10 backdrop-blur-md hover:bg-white/20 transition-all duration-200 flex-shrink-0"
+                className="p-3 rounded-full bg-white/20 backdrop-blur-md hover:bg-white/30 active:bg-white/40 transition-all duration-200 flex-shrink-0 pointer-events-auto shadow-xl"
                 data-testid="button-close-modal"
+                aria-label="Fechar visualização"
               >
-                <X className="h-5 w-5 text-white" />
+                <X className="h-6 w-6 text-white drop-shadow-lg" strokeWidth={2.5} />
               </button>
             </div>
 
@@ -836,32 +843,40 @@ export default function PropertyDetails() {
                 {/* Botão Anterior */}
                 <button
                   onClick={handlePreviousImage}
-                  className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 p-3 sm:p-4 rounded-xl bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-md border border-white/30 hover:from-white/30 hover:to-white/20 hover:border-white/40 hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg hover:shadow-xl z-40 group"
+                  className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 p-3 sm:p-4 rounded-xl bg-gradient-to-br from-white/25 to-white/15 backdrop-blur-md border border-white/40 hover:from-white/35 hover:to-white/25 hover:border-white/50 active:scale-95 transition-all duration-200 shadow-2xl group pointer-events-auto"
+                  style={{ zIndex: 9998 }}
                   data-testid="button-previous-image"
                   aria-label="Imagem anterior"
                 >
-                  <ChevronLeft className="h-6 w-6 sm:h-8 sm:w-8 text-white drop-shadow-md group-hover:drop-shadow-lg transition-all" strokeWidth={2.5} />
+                  <ChevronLeft className="h-6 w-6 sm:h-8 sm:w-8 text-white drop-shadow-lg" strokeWidth={3} />
                 </button>
 
                 {/* Botão Próximo */}
                 <button
                   onClick={handleNextImage}
-                  className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 p-3 sm:p-4 rounded-xl bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-md border border-white/30 hover:from-white/30 hover:to-white/20 hover:border-white/40 hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg hover:shadow-xl z-40 group"
+                  className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 p-3 sm:p-4 rounded-xl bg-gradient-to-br from-white/25 to-white/15 backdrop-blur-md border border-white/40 hover:from-white/35 hover:to-white/25 hover:border-white/50 active:scale-95 transition-all duration-200 shadow-2xl group pointer-events-auto"
+                  style={{ zIndex: 9998 }}
                   data-testid="button-next-image"
                   aria-label="Próxima imagem"
                 >
-                  <ChevronRight className="h-6 w-6 sm:h-8 sm:w-8 text-white drop-shadow-md group-hover:drop-shadow-lg transition-all" strokeWidth={2.5} />
+                  <ChevronRight className="h-6 w-6 sm:h-8 sm:w-8 text-white drop-shadow-lg" strokeWidth={3} />
                 </button>
               </>
             )}
 
-            {/* Footer com contador - altura fixa */}
-            <div className="absolute bottom-0 left-0 right-0 z-50 h-20 bg-gradient-to-t from-black/60 to-transparent">
+            {/* Footer com contador - altura fixa com safe area */}
+            <div 
+              className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/80 to-transparent pointer-events-none"
+              style={{ 
+                zIndex: 9999,
+                paddingBottom: 'max(env(safe-area-inset-bottom), 0.5rem)'
+              }}
+            >
               <div className="px-4 sm:px-6 py-4 sm:py-5">
                 {/* Contador centralizado */}
                 <div className="flex items-center justify-center">
-                  <div className="px-4 py-2 rounded-full bg-white/10 backdrop-blur-md border border-white/20">
-                    <span className="text-white text-sm font-medium">
+                  <div className="px-5 py-2.5 rounded-full bg-white/20 backdrop-blur-md border border-white/30 shadow-xl pointer-events-auto">
+                    <span className="text-white text-base font-semibold drop-shadow-lg">
                       {modalImageIndex + 1} de {images.length}
                     </span>
                   </div>
