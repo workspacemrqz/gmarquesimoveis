@@ -624,16 +624,16 @@ export default function AdminIntelligence({ isDarkMode = false }: AdminIntellige
 
   return (
     <div 
-      className="w-full h-screen flex flex-col overflow-hidden"
+      className="w-full min-h-screen flex flex-col"
       style={{
         backgroundColor: isDarkMode ? '#060606' : undefined,
         color: isDarkMode ? '#FFFFFF' : undefined
       }}
     >
-      <div className="container mx-auto max-w-5xl p-4 h-full flex flex-col">
+      <div className="container mx-auto max-w-5xl p-4 flex flex-col">
       {/* Chat Area */}
       <Card 
-        className="flex flex-col flex-1 overflow-hidden"
+        className="flex flex-col overflow-hidden max-h-[75vh]"
         style={{
           backgroundColor: isDarkMode ? '#1a1a1a' : undefined,
           borderColor: isDarkMode ? '#333333' : undefined
@@ -959,7 +959,7 @@ export default function AdminIntelligence({ isDarkMode = false }: AdminIntellige
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Digite sua mensagem..."
-                className="min-h-[120px] max-h-[240px] resize-none w-full"
+                className="min-h-[80px] max-h-[180px] resize-none w-full"
                 style={{
                   backgroundColor: isDarkMode ? '#1a1a1a' : undefined,
                   color: isDarkMode ? '#FFFFFF' : undefined,
