@@ -781,13 +781,15 @@ export default function PropertyDetails() {
 
             {/* Área da imagem - altura calculada considerando header (64px) e footer (80px) */}
             <div 
-              className="absolute inset-0 flex items-center justify-center"
+              className="absolute inset-0 flex items-center justify-center cursor-pointer"
               style={{
                 paddingTop: '64px',
                 paddingBottom: '80px',
                 paddingLeft: '16px',
                 paddingRight: '16px'
               }}
+              onClick={() => setIsImageModalOpen(false)}
+              data-testid="modal-backdrop"
             >
               {images.length > 0 && (
                 <div 
@@ -795,11 +797,12 @@ export default function PropertyDetails() {
                   onTouchStart={handleTouchStart}
                   onTouchMove={handleTouchMove}
                   onTouchEnd={handleTouchEnd}
+                  onClick={(e) => e.stopPropagation()}
                 >
                   <img 
                     src={images[modalImageIndex]} 
                     alt={`${property.title} - Imagem ${modalImageIndex + 1}`}
-                    className="w-full h-full object-contain"
+                    className="w-full h-full object-contain cursor-default"
                     style={{
                       maxWidth: '100%',
                       maxHeight: '100%'
