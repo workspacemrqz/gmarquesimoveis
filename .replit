@@ -56,5 +56,5 @@ channel = "stable-25_05"
 
 [deployment]
 run = ["npm", "run", "start"]
-deploymentTarget = "autoscale"
+deploymentTarget = "gce"
 build = ["npm", "run", "build"]
