@@ -54,6 +54,10 @@ notes/
 *.notes
 temp_*
 
+# Attached assets (may contain sensitive info)
+attached_assets/*.txt
+attached_assets/*.log
+
 # OS generated files
 .DS_Store
 .DS_Store?
