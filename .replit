@@ -12,12 +12,12 @@ localPort = 5000
 externalPort = 80
 
 [[ports]]
-localPort = 34607
-externalPort = 4200
-
-[[ports]]
 localPort = 37115
 externalPort = 3003
+
+[[ports]]
+localPort = 39597
+externalPort = 4200
 
 [[ports]]
 localPort = 40539
@@ -55,6 +55,6 @@ waitForPort = 5000
 channel = "stable-25_05"
 
 [deployment]
-run = ["npx", "tsx", "server/index.ts"]
+run = ["npm", "run", "start"]
 deploymentTarget = "autoscale"
-build = ["echo", "No build needed with tsx"]
+build = ["npm", "run", "build"]
