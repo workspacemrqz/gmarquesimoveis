@@ -274,10 +274,11 @@ export default function PropertyDetails() {
                             setSelectedImage((prev) => prev === 0 ? images.length - 1 : prev - 1);
                             setIsAutoPlay(false);
                           }}
-                          className="absolute left-3 top-1/2 -translate-y-1/2 p-2 bg-black/50 backdrop-blur-sm rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-black/70 hover:scale-110 z-10"
+                          className="absolute left-3 top-1/2 -translate-y-1/2 p-3 rounded-xl bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-md border border-white/30 opacity-0 group-hover:opacity-100 hover:from-white/30 hover:to-white/20 hover:border-white/40 hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg hover:shadow-xl z-10"
                           data-testid="button-prev-main-image"
+                          aria-label="Imagem anterior"
                         >
-                          <ChevronLeft className="h-6 w-6 text-white" />
+                          <ChevronLeft className="h-6 w-6 text-white drop-shadow-md" strokeWidth={2.5} />
                         </button>
 
                         {/* Seta Próxima */}
@@ -287,10 +288,11 @@ export default function PropertyDetails() {
                             setSelectedImage((prev) => (prev + 1) % images.length);
                             setIsAutoPlay(false);
                           }}
-                          className="absolute right-3 top-1/2 -translate-y-1/2 p-2 bg-black/50 backdrop-blur-sm rounded-full opacity-0 group-hover:opacity-100 transition-all duration-200 hover:bg-black/70 hover:scale-110 z-10"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 p-3 rounded-xl bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-md border border-white/30 opacity-0 group-hover:opacity-100 hover:from-white/30 hover:to-white/20 hover:border-white/40 hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg hover:shadow-xl z-10"
                           data-testid="button-next-main-image"
+                          aria-label="Próxima imagem"
                         >
-                          <ChevronRight className="h-6 w-6 text-white" />
+                          <ChevronRight className="h-6 w-6 text-white drop-shadow-md" strokeWidth={2.5} />
                         </button>
                       </>
                     )}
@@ -298,10 +300,11 @@ export default function PropertyDetails() {
                     {/* Ícone de expandir no canto superior direito */}
                     <button
                       onClick={() => handleOpenImageModal(selectedImage)}
-                      className="absolute top-3 right-3 p-2 bg-black/50 backdrop-blur-sm rounded-lg opacity-0 group-hover:opacity-100 transition-opacity duration-200 hover:bg-black/70 z-10"
+                      className="absolute top-3 right-3 p-2.5 rounded-xl bg-gradient-to-br from-white/20 to-white/10 backdrop-blur-md border border-white/30 opacity-0 group-hover:opacity-100 hover:from-white/30 hover:to-white/20 hover:border-white/40 hover:scale-105 active:scale-95 transition-all duration-300 shadow-lg hover:shadow-xl z-10"
                       data-testid="button-expand-image"
+                      aria-label="Expandir imagem"
                     >
-                      <Expand className="h-5 w-5 text-white" />
+                      <Expand className="h-5 w-5 text-white drop-shadow-md" strokeWidth={2.5} />
                     </button>
                   </div>
                 )}
