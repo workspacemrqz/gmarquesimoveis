@@ -9,7 +9,13 @@ export function getSession() {
   const pgStore = connectPg(session);
   
   // Use SUPABASE or DATABASE_URL for session storage
-  const connectionString = process.env.SUPABASE || process.env.DATABASE_URL;
+  let connectionString = process.env.SUPABASE || process.env.DATABASE_URL;
+  
+  // Add SSL parameters if in production and not already present
+  if (connectionString && process.env.NODE_ENV === 'production' && !connectionString.includes('sslmode=')) {
+    const separator = connectionString.includes('?') ? '&' : '?';
+    connectionString = `${connectionString}${separator}sslmode=require`;
+  }
   
   // Use memory store if database connection is not available
   let sessionStore;
@@ -21,9 +27,11 @@ export function getSession() {
         ttl: sessionTtl,
         tableName: "sessions",
       });
+      console.log("✅ PostgreSQL session store configured");
     }
   } catch (error) {
     console.warn("Could not create PG session store, using memory store instead:", error);
+    sessionStore = undefined;
   }
   
   const sessionConfig = {
