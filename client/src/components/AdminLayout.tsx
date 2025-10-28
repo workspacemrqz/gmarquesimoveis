@@ -22,6 +22,7 @@ import {
   SidebarMenuItem,
   SidebarHeader,
   SidebarFooter,
+  useSidebar,
 } from "@/components/ui/sidebar";
 import { Button } from "@/components/ui/button";
 import { useSettings } from "@/hooks/useSettings";
@@ -67,8 +68,20 @@ const menuCategories = [
 export function AppSidebar() {
   const [location, setLocation] = useLocation();
   const { logoImage, companyName, showCompanyNameInLogo } = useSettings();
+  const { isMobile, setOpenMobile } = useSidebar();
+
+  const handleLinkClick = () => {
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+  };
 
   const handleLogout = async () => {
+    // Fecha o menu no mobile antes do logout
+    if (isMobile) {
+      setOpenMobile(false);
+    }
+    
     try {
       // Faz logout no backend
       await fetch('/api/auth/logout', {
@@ -91,7 +104,7 @@ export function AppSidebar() {
   return (
     <Sidebar>
       <SidebarHeader className="border-b p-4">
-        <Link href="/admin" className="cursor-pointer p-2 block" data-testid="link-admin-logo">
+        <Link href="/admin" className="cursor-pointer p-2 block" data-testid="link-admin-logo" onClick={handleLinkClick}>
           <div className="flex items-center gap-3">
             {logoImage ? (
               <img src={logoImage} alt="Logo" className="h-16 object-contain" />
@@ -116,7 +129,7 @@ export function AppSidebar() {
                       asChild
                       isActive={location === item.url}
                     >
-                      <Link href={item.url} data-testid={`sidebar-link-${item.title.toLowerCase()}`}>
+                      <Link href={item.url} data-testid={`sidebar-link-${item.title.toLowerCase()}`} onClick={handleLinkClick}>
                         <item.icon className="h-4 w-4" />
                         <span>{item.title}</span>
                       </Link>
