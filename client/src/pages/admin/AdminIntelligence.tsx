@@ -64,14 +64,19 @@ export default function AdminIntelligence({ isDarkMode = false }: AdminIntellige
   const [isTranscribing, setIsTranscribing] = useState(false);
   const [isPropertySearchMode, setIsPropertySearchMode] = useState(false);
   const [isPropertyRegistrationMode, setIsPropertyRegistrationMode] = useState(false);
-  const messagesEndRef = useRef<HTMLDivElement>(null);
+  const scrollAreaRef = useRef<HTMLDivElement>(null);
   const textareaRef = useRef<HTMLTextAreaElement>(null);
   const fileInputRef = useRef<HTMLInputElement>(null);
   const mediaRecorderRef = useRef<MediaRecorder | null>(null);
   const audioChunksRef = useRef<Blob[]>([]);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: "smooth" });
+    if (scrollAreaRef.current) {
+      const viewport = scrollAreaRef.current.querySelector('[data-radix-scroll-area-viewport]');
+      if (viewport) {
+        viewport.scrollTop = viewport.scrollHeight;
+      }
+    }
   };
 
   useEffect(() => {
@@ -635,7 +640,7 @@ export default function AdminIntelligence({ isDarkMode = false }: AdminIntellige
         }}
       >
         <CardContent className="flex-1 p-0 overflow-hidden min-h-0">
-          <ScrollArea className="h-full p-4">
+          <ScrollArea ref={scrollAreaRef} className="h-full p-4">
             <div className="space-y-4">
               {/* Empty state title */}
               {messages.length === 0 && (
@@ -866,8 +871,6 @@ export default function AdminIntelligence({ isDarkMode = false }: AdminIntellige
                   </div>
                 </div>
               )}
-              
-              <div ref={messagesEndRef} />
             </div>
           </ScrollArea>
         </CardContent>
