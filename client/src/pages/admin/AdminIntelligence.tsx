@@ -959,7 +959,7 @@ export default function AdminIntelligence({ isDarkMode = false }: AdminIntellige
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={handleKeyDown}
                 placeholder="Digite sua mensagem..."
-                className="min-h-[40px] resize-none w-full"
+                className="min-h-[120px] max-h-[240px] resize-none w-full"
                 style={{
                   backgroundColor: isDarkMode ? '#1a1a1a' : undefined,
                   color: isDarkMode ? '#FFFFFF' : undefined,
