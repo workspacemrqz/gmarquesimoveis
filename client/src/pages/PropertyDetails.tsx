@@ -749,7 +749,7 @@ export default function PropertyDetails() {
 
       {/* Modal de Visualização de Imagens */}
       <Dialog open={isImageModalOpen} onOpenChange={setIsImageModalOpen}>
-        <DialogContent className="max-w-full w-screen h-screen p-0 overflow-hidden bg-black/98 backdrop-blur-sm border-0 rounded-none [&>button]:hidden">
+        <DialogContent className="!fixed !inset-0 !w-screen !h-screen !max-w-full !p-0 !m-0 !bg-black/95 !border-0 !rounded-none [&>button]:hidden !z-[9999]">
           {/* Título e descrição ocultos para acessibilidade */}
           <DialogTitle className="sr-only">
             Visualização de Imagens - {property?.title}
@@ -757,25 +757,26 @@ export default function PropertyDetails() {
           <DialogDescription className="sr-only">
             Use as setas do teclado ou arraste para navegar entre as imagens. Pressione ESC para fechar.
           </DialogDescription>
-          <div className="relative w-full h-full flex flex-col">
-            {/* Header com botão fechar - altura fixa com safe area */}
+          <div className="fixed inset-0 w-full h-full flex flex-col">
+            {/* Header com botão fechar - sempre visível */}
             <div 
-              className="absolute top-0 left-0 right-0 flex items-center justify-between px-4 sm:px-6 h-16 bg-gradient-to-b from-black/80 to-transparent pointer-events-none"
+              className="fixed top-0 left-0 right-0 flex items-center justify-between px-4 h-16 bg-gradient-to-b from-black/90 to-black/50"
               style={{ 
-                zIndex: 9999,
-                paddingTop: 'max(env(safe-area-inset-top), 0.5rem)'
+                zIndex: 99999,
+                paddingTop: 'env(safe-area-inset-top, 0px)'
               }}
             >
-              <div className="text-white/90 text-sm font-medium truncate max-w-[60%]">
+              <div className="text-white/90 text-sm font-medium truncate max-w-[60%] pt-2">
                 {property?.title}
               </div>
               <button
                 onClick={() => setIsImageModalOpen(false)}
-                className="p-3 rounded-full bg-white/20 backdrop-blur-md hover:bg-white/30 active:bg-white/40 transition-all duration-200 flex-shrink-0 pointer-events-auto shadow-xl"
+                className="mt-2 p-3 rounded-full bg-white/30 backdrop-blur-md hover:bg-white/40 active:bg-white/50 transition-all duration-200 flex-shrink-0 shadow-2xl border border-white/20"
                 data-testid="button-close-modal"
                 aria-label="Fechar visualização"
+                style={{ zIndex: 99999 }}
               >
-                <X className="h-6 w-6 text-white drop-shadow-lg" strokeWidth={2.5} />
+                <X className="h-7 w-7 text-white" strokeWidth={3} />
               </button>
             </div>
 
@@ -846,40 +847,40 @@ export default function PropertyDetails() {
                 {/* Botão Anterior */}
                 <button
                   onClick={handlePreviousImage}
-                  className="absolute left-3 sm:left-6 top-1/2 -translate-y-1/2 p-3 sm:p-4 rounded-xl bg-gradient-to-br from-white/25 to-white/15 backdrop-blur-md border border-white/40 hover:from-white/35 hover:to-white/25 hover:border-white/50 active:scale-95 transition-all duration-200 shadow-2xl group pointer-events-auto"
-                  style={{ zIndex: 9998 }}
+                  className="fixed left-2 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/40 backdrop-blur-md border-2 border-white/50 hover:bg-white/50 active:bg-white/60 transition-all duration-200 shadow-2xl"
+                  style={{ zIndex: 99998 }}
                   data-testid="button-previous-image"
                   aria-label="Imagem anterior"
                 >
-                  <ChevronLeft className="h-6 w-6 sm:h-8 sm:w-8 text-white drop-shadow-lg" strokeWidth={3} />
+                  <ChevronLeft className="h-7 w-7 text-white" strokeWidth={3.5} />
                 </button>
 
                 {/* Botão Próximo */}
                 <button
                   onClick={handleNextImage}
-                  className="absolute right-3 sm:right-6 top-1/2 -translate-y-1/2 p-3 sm:p-4 rounded-xl bg-gradient-to-br from-white/25 to-white/15 backdrop-blur-md border border-white/40 hover:from-white/35 hover:to-white/25 hover:border-white/50 active:scale-95 transition-all duration-200 shadow-2xl group pointer-events-auto"
-                  style={{ zIndex: 9998 }}
+                  className="fixed right-2 top-1/2 -translate-y-1/2 p-3 rounded-full bg-white/40 backdrop-blur-md border-2 border-white/50 hover:bg-white/50 active:bg-white/60 transition-all duration-200 shadow-2xl"
+                  style={{ zIndex: 99998 }}
                   data-testid="button-next-image"
                   aria-label="Próxima imagem"
                 >
-                  <ChevronRight className="h-6 w-6 sm:h-8 sm:w-8 text-white drop-shadow-lg" strokeWidth={3} />
+                  <ChevronRight className="h-7 w-7 text-white" strokeWidth={3.5} />
                 </button>
               </>
             )}
 
-            {/* Footer com contador - altura fixa com safe area */}
+            {/* Footer com contador - sempre visível */}
             <div 
-              className="absolute bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/80 to-transparent pointer-events-none"
+              className="fixed bottom-0 left-0 right-0 h-20 bg-gradient-to-t from-black/90 to-black/50"
               style={{ 
-                zIndex: 9999,
-                paddingBottom: 'max(env(safe-area-inset-bottom), 0.5rem)'
+                zIndex: 99999,
+                paddingBottom: 'env(safe-area-inset-bottom, 0px)'
               }}
             >
-              <div className="px-4 sm:px-6 py-4 sm:py-5">
+              <div className="px-4 pb-4 pt-2">
                 {/* Contador centralizado */}
                 <div className="flex items-center justify-center">
-                  <div className="px-5 py-2.5 rounded-full bg-white/20 backdrop-blur-md border border-white/30 shadow-xl pointer-events-auto">
-                    <span className="text-white text-base font-semibold drop-shadow-lg">
+                  <div className="px-6 py-3 rounded-full bg-white/40 backdrop-blur-md border-2 border-white/50 shadow-2xl">
+                    <span className="text-white text-lg font-bold">
                       {modalImageIndex + 1} de {images.length}
                     </span>
                   </div>
