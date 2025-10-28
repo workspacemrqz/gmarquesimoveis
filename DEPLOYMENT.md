@@ -1,27 +1,17 @@
 # Guia de Implantação - Easypanel com Buildpacks
 
-## Problema Identificado
+## Problema Identificado e Corrigido
 
-O erro durante a implantação ocorreu porque o arquivo `project.toml` estava configurado de forma incompleta:
+O erro `bash: line 1: tsx: command not found` ocorria durante a implantação porque o comando `tsx` não estava acessível via PATH quando executado diretamente pelo Procfile.
 
-```
-ERROR: failed to export: determining entrypoint: tried to set web to default but it doesn't exist
-```
+## Solução Aplicada
 
-## Causa Raiz
+A solução foi modificar o Procfile para usar `npm start` ao invés de executar `tsx` diretamente. Quando o npm executa scripts, ele automaticamente adiciona `node_modules/.bin` ao PATH, permitindo que os executáveis instalados como o `tsx` sejam encontrados.
 
-Quando você especifica buildpacks manualmente no `project.toml`, é necessário incluir **todos** os buildpacks necessários. O projeto estava configurado apenas com:
+## Arquivos de Configuração
 
-```toml
-[[io.buildpacks.group]]
-id = "heroku/nodejs"
-```
-
-Isso fazia com que o buildpack do Procfile não fosse incluído, impedindo que o processo `web` fosse configurado corretamente.
-
-## Correção Aplicada
-
-O arquivo `project.toml` foi atualizado para incluir o buildpack do Procfile:
+### 1. project.toml
+Especifica os buildpacks necessários para a construção da imagem:
 
 ```toml
 [_]
@@ -37,62 +27,144 @@ id = "heroku/nodejs"
 id = "heroku/procfile"
 ```
 
-## Arquivos de Configuração
-
-### 1. project.toml
-Especifica os buildpacks necessários para a construção da imagem.
-
 ### 2. Procfile
 Define como a aplicação deve ser iniciada em produção:
 ```
-web: NODE_ENV=production tsx server/index.ts
+web: npm start
 ```
 
 ### 3. package.json
-- **Node.js**: versão 20.x
-- **npm**: versão 10.x
-- **tsx**: incluído nas dependências (necessário para executar TypeScript em produção)
+Configuração dos scripts e engines:
+```json
+{
+  "engines": {
+    "node": "20.x",
+    "npm": "10.x"
+  },
+  "scripts": {
+    "dev": "tsx server/index.ts",
+    "build": "vite build",
+    "start": "NODE_ENV=production tsx server/index.ts"
+  }
+}
+```
 
-## Processo de Build
+**Importante**: O pacote `tsx` está incluído nas dependências de produção (não em devDependencies), pois é necessário para executar o servidor TypeScript em produção.
 
-1. **Detecção**: O buildpack Node.js detecta o projeto e instala as dependências
-2. **Build**: Executa `npm run build` para compilar o frontend (Vite)
-3. **Procfile**: O buildpack Procfile configura o processo web
-4. **Start**: Em produção, executa o comando do Procfile
+## Processo de Build no Easypanel
+
+1. **Detecção**: O buildpack Node.js detecta o projeto baseado no `package.json`
+2. **Instalação**: Instala Node.js 20.x e npm 10.x conforme especificado em `engines`
+3. **Dependências**: Executa `npm ci` para instalar todas as dependências
+4. **Build**: Executa `npm run build` que compila o frontend com Vite
+5. **Prune**: Executa `npm prune` (mantém dependências de produção, incluindo `tsx`)
+6. **Procfile**: O buildpack Procfile configura o processo web
+7. **Start**: Em produção, executa `npm start` que por sua vez executa `tsx server/index.ts`
 
 ## Variáveis de Ambiente Necessárias
 
-Certifique-se de que as seguintes variáveis estão configuradas no Easypanel:
+Configure as seguintes variáveis de ambiente no Easypanel antes da implantação:
 
-- `SESSION_SECRET`: Segredo para sessões
-- `SUPABASE`: URL de conexão com o banco de dados Supabase
-- `SUPABASE_ANON_KEY`: Chave anônima do Supabase
-- `PORT`: Porta do servidor (geralmente definida automaticamente pela plataforma)
-- `NODE_ENV`: Define automaticamente como `production` pelo Procfile
+### Obrigatórias:
+- `SUPABASE` ou `DATABASE_URL`: URL de conexão com o banco de dados PostgreSQL
+- `SESSION_SECRET`: Chave secreta para criptografia de sessões (use uma string aleatória forte)
+- `LOGIN`: Nome de usuário do administrador
+- `SENHA`: Senha do administrador
 
-## Próximos Passos
+### Para Recursos de IA (opcionais):
+- `AI_INTEGRATIONS_OPENAI_BASE_URL`: URL base da API OpenAI
+- `AI_INTEGRATIONS_OPENAI_API_KEY`: Chave de API do OpenAI
+- `PERPLEXITY_API_KEY`: Chave de API do Perplexity para busca AI
 
-1. Faça commit das alterações:
-   ```bash
-   git add project.toml
-   git commit -m "Fix: Add Procfile buildpack to project.toml"
-   git push
-   ```
+### Configuradas Automaticamente:
+- `PORT`: Definida automaticamente pela plataforma (padrão: 5000 se não definida)
+- `NODE_ENV`: Definida como `production` pelo script de start
 
-2. Execute novamente a implantação no Easypanel
+## Como Implantar no Easypanel
 
-3. A aplicação deve iniciar corretamente na porta definida pela variável `PORT`
+### 1. Preparação do Repositório
+Certifique-se de que todos os arquivos estão commitados:
+```bash
+git add .
+git commit -m "Configure deployment for Easypanel with Heroku buildpacks"
+git push
+```
 
-## Verificação
+### 2. Configuração no Easypanel
+1. Acesse o painel do Easypanel
+2. Selecione o método de construção: **Buildpacks**
+3. Escolha o construtor: **heroku/builder:24**
+4. Configure as variáveis de ambiente listadas acima
+5. Inicie a implantação
 
+### 3. Verificação
 Após a implantação bem-sucedida, você deve ver nos logs:
 ```
 🚀 Server running on 0.0.0.0:[PORT]
 ```
 
+## Estrutura do Projeto
+
+```
+├── client/           # Frontend React + Vite
+├── server/           # Backend Express + TypeScript
+├── shared/           # Schemas e tipos compartilhados
+├── package.json      # Configuração do Node.js e scripts
+├── Procfile          # Comando de inicialização
+├── project.toml      # Configuração dos buildpacks
+└── vite.config.ts    # Configuração do Vite
+```
+
+## Build de Produção
+
+O processo de build:
+1. **Frontend**: Vite compila o React e gera arquivos estáticos em `dist/public/`
+2. **Backend**: O servidor TypeScript é executado diretamente via `tsx` (sem compilação prévia)
+3. **Servir**: Em produção, o Express serve os arquivos estáticos do frontend e as rotas da API
+
+## Troubleshooting
+
+### "tsx: command not found"
+- ✅ **Solucionado**: Use `npm start` no Procfile ao invés de `tsx` diretamente
+- Verifique que `tsx` está em `dependencies` (não em `devDependencies`)
+
+### "Cannot find module '@shared/schema'"
+- Verifique que o `tsconfig.json` tem o path alias configurado
+- Certifique-se que o arquivo `shared/schema.ts` existe
+
+### "Session secret is required"
+- Configure a variável de ambiente `SESSION_SECRET`
+
+### "Database connection error"
+- Verifique que `SUPABASE` ou `DATABASE_URL` está configurada corretamente
+- Teste a conexão com o banco de dados
+
+### Site não abre após deployment
+- Verifique os logs de build para erros
+- Confirme que todas as variáveis de ambiente estão configuradas
+- Verifique que a aplicação está escutando na porta correta (variável `PORT`)
+
+## Logs e Monitoramento
+
+Para visualizar os logs da aplicação no Easypanel:
+1. Acesse o painel do serviço
+2. Vá para a aba "Logs"
+3. Procure por:
+   - Mensagens de inicialização do servidor
+   - Erros de conexão com banco de dados
+   - Requisições HTTP
+
+## Atualizações Futuras
+
+Para atualizar a aplicação após a primeira implantação:
+1. Faça as alterações no código
+2. Commit e push para o repositório
+3. No Easypanel, clique em "Rebuild" ou configure deploy automático via webhook
+
 ## Suporte
 
 Se encontrar problemas adicionais:
-- Verifique os logs de build no Easypanel
+- Verifique os logs de build e runtime no Easypanel
 - Confirme que todas as variáveis de ambiente estão configuradas
 - Verifique se o Procfile e project.toml estão commitados no repositório
+- Teste localmente com `npm run build && npm start` para simular produção
