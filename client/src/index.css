@@ -491,3 +491,11 @@
     flex-shrink: 0 !important;
   }
 }
+
+/* Redução vertical do container do chat em /admin/inteligencia */
+@layer components {
+  .w-full.h-screen.flex.flex-col.overflow-hidden > .container.max-w-5xl.p-4.h-full.flex.flex-col > .flex.flex-col.h-full {
+    height: 70vh !important;
+    max-height: 70vh !important;
+  }
+}
