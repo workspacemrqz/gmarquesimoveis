@@ -10,6 +10,16 @@ Preferred communication style: Simple, everyday language.
 UI/UX Preferences: No toast notifications - user prefers silent operations without popup notifications.
 Business Rules: The system works EXCLUSIVELY with properties for sale. Rental properties are not accepted.
 
+## Recent Updates
+
+### Property Image Modal (October 2025)
+The property detail page image modal was redesigned for optimal viewing experience:
+- **Viewport Containment**: All modal content (header, image, navigation, footer) fits within the viewport without scrolling on any screen size
+- **Image Sizing**: Images use `object-contain` with calculated padding (64px top for header, 80px bottom for footer) ensuring they never exceed modal bounds
+- **Modern Navigation**: Navigation arrows feature gradient backgrounds, subtle borders, shadow effects, and smooth hover/active transitions for a clean, contemporary look
+- **Responsive Design**: Navigation controls adapt sizing from mobile (left-3, h-6 icons) to desktop (left-6, h-8 icons)
+- **Accessibility**: Added aria-labels to navigation buttons and maintains keyboard/touch/click navigation support
+
 ## System Architecture
 
 ### Frontend
