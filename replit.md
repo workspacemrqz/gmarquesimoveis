@@ -183,16 +183,8 @@ The buildpack will automatically detect Node.js via `package.json`, install depe
 - Verify that `vite.config.ts` has `outDir: "dist/public"`
 - Confirm that `server/vite.ts` `serveStatic` function references `dist/public` (not just `public`)
 
-**Error: "Connection terminated unexpectedly"**
-- This is a PostgreSQL connection error (fixed in latest version)
-- Ensure `SUPABASE` connection string is correct: `postgresql://postgres:PASSWORD@HOST.supabase.co:5432/postgres`
-- The application automatically adds SSL configuration in production
-- Verify the `sessions` table exists in your database
-- Check that your database is online and accessible
-
 **Build succeeds but server crashes on start**
 - Check that all required environment variables are set
 - Verify the database connection string is correct
 - Review application logs for specific error messages
-- Ensure `NODE_ENV=production` is set
 
