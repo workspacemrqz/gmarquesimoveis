@@ -126,38 +126,65 @@ For detailed documentation, see `SECURITY_IMAGES.md`.
 
 ### Easypanel with Heroku Buildpacks
 
-The project is configured to deploy on Easypanel using the Heroku Buildpacks method with `heroku/builder:24`. The following files are configured for this deployment:
+The project is configured to deploy on Easypanel using the Heroku Buildpacks method with `heroku/builder:24`. 
 
 #### Configuration Files
 
 1. **project.toml**: Specifies the Heroku builder and Node.js buildpack
-2. **Procfile**: Defines the production start command (`web: NODE_ENV=production node dist/server/index.js`)
-3. **tsconfig.build.json**: Production TypeScript compilation configuration
-4. **package.json**: Includes `build` and `start` scripts, plus `engines` section specifying Node.js 20.x and npm 10.x
+2. **Procfile**: Defines the production start command (`web: npm start`)
+3. **package.json**: Includes `build` and `start` scripts, plus `engines` section specifying Node.js 20.x and npm 10.x
 
 #### Build Process
 
-The build process follows these steps:
-1. `npm install`: Installs all dependencies
-2. `npm run build`: Compiles TypeScript server code to `dist/server/` and builds Vite frontend to `dist/public/`
-3. Production start: Runs the compiled server which serves the static frontend files
+The Heroku buildpack automatically executes the following steps:
+1. **Install Phase**: Runs `npm ci` to install all dependencies from package-lock.json
+2. **Build Phase**: Executes `npm run build` which runs `vite build` to compile the frontend to `dist/public/`
+3. **Prune Phase**: Runs `npm prune` to remove dev dependencies (but keeps all deps since TypeScript is needed in production)
 
 #### Production Configuration
 
 In production mode (`NODE_ENV=production`):
-- Server binds to `0.0.0.0` (container-compatible) instead of `127.0.0.1`
-- Server serves pre-built static files from `dist/public/` instead of running Vite dev server
-- TypeScript is compiled to JavaScript for optimal performance
+- Server uses `tsx` to run TypeScript directly: `tsx server/index.ts`
+- Server binds to `0.0.0.0` (container-compatible) on the port specified by `PORT` env var (defaults to 5000)
+- Server serves pre-built static files from `dist/public/` directory instead of running Vite dev server
+- The `serveStatic` function in `server/vite.ts` validates that `dist/public/` exists and serves files from there
+
+**Important**: The server must find the built frontend at `dist/public/` (not just `public/`). This path is configured in:
+- `vite.config.ts`: `build.outDir = "dist/public"`
+- `server/vite.ts`: `serveStatic` function looks for `dist/public/`
 
 #### Deployment Steps on Easypanel
 
 1. Create a new App in Easypanel
 2. Connect your Git repository
 3. Select "Buildpacks" as the build method
-4. The `project.toml` file will automatically configure `heroku/builder:24`
-5. Set all required environment variables in the Environment tab
-6. Ensure the proxy port is set to the application port (default: 5000 or value from `PORT` env var)
-7. Deploy the application
+4. Specify `heroku/builder:24` as the builder (automatically configured via `project.toml`)
+5. Set all required environment variables in the Environment tab:
+   - `SUPABASE`: PostgreSQL connection string
+   - `SUPABASE_ANON_KEY`: Supabase anonymous key
+   - `SUPABASE_URL`: Supabase project URL
+   - `SESSION_SECRET`: Secret for session encryption
+   - `LOGIN`: Admin username
+   - `SENHA`: Admin password
+   - `AI_INTEGRATIONS_OPENAI_BASE_URL`: Ollama AI base URL
+   - `AI_INTEGRATIONS_OPENAI_API_KEY`: Ollama AI API key
+   - `PERPLEXITY_API_KEY`: Perplexity AI API key
+   - `NODE_ENV`: Set to `production`
+   - `PORT`: (Optional) Set by platform, defaults to 5000
+6. Deploy the application
 
-The buildpack will automatically detect Node.js, install dependencies, run the build script, and start the application using the Procfile.
+The buildpack will automatically detect Node.js via `package.json`, install dependencies, run the build script, and start the application using the command defined in the Procfile.
+
+#### Troubleshooting
+
+**Error: "Could not find the build directory"**
+- This error occurs if `dist/public/` doesn't exist after build
+- Ensure `npm run build` completes successfully during the build phase
+- Verify that `vite.config.ts` has `outDir: "dist/public"`
+- Confirm that `server/vite.ts` `serveStatic` function references `dist/public` (not just `public`)
+
+**Build succeeds but server crashes on start**
+- Check that all required environment variables are set
+- Verify the database connection string is correct
+- Review application logs for specific error messages
 
