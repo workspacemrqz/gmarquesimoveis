@@ -1,0 +1,8 @@
+[_]
+schema-version = "0.2"
+
+[build]
+builder = "heroku/builder:24"
+
+[[io.buildpacks.group]]
+id = "heroku/nodejs"
