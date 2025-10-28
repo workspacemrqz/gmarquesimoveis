@@ -633,10 +633,11 @@ export default function AdminIntelligence({ isDarkMode = false }: AdminIntellige
       <div className="container mx-auto max-w-5xl p-4 flex flex-col">
       {/* Chat Area */}
       <Card 
-        className="flex flex-col overflow-hidden max-h-[75vh]"
+        className="flex flex-col overflow-hidden"
         style={{
           backgroundColor: isDarkMode ? '#1a1a1a' : undefined,
-          borderColor: isDarkMode ? '#333333' : undefined
+          borderColor: isDarkMode ? '#333333' : undefined,
+          height: 'calc(100vh - 100px)'
         }}
       >
         <CardContent className="flex-1 p-0 overflow-hidden min-h-0">
