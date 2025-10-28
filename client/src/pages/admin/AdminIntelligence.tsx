@@ -637,7 +637,7 @@ export default function AdminIntelligence({ isDarkMode = false }: AdminIntellige
         style={{
           backgroundColor: isDarkMode ? '#1a1a1a' : undefined,
           borderColor: isDarkMode ? '#333333' : undefined,
-          height: 'calc(100vh - 100px)'
+          height: 'calc(100vh - 150px)'
         }}
       >
         <CardContent className="flex-1 p-0 overflow-hidden min-h-0">
