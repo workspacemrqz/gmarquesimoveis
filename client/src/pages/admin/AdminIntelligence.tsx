@@ -619,23 +619,23 @@ export default function AdminIntelligence({ isDarkMode = false }: AdminIntellige
 
   return (
     <div 
-      className="w-full min-h-screen flex flex-col"
+      className="w-full h-screen flex flex-col overflow-hidden"
       style={{
         backgroundColor: isDarkMode ? '#060606' : undefined,
         color: isDarkMode ? '#FFFFFF' : undefined
       }}
     >
-      <div className="container mx-auto max-w-5xl p-4 flex-1 flex flex-col">
+      <div className="container mx-auto max-w-5xl p-4 h-full flex flex-col">
       {/* Chat Area */}
       <Card 
-        className="flex flex-col h-full overflow-hidden"
+        className="flex flex-col flex-1 overflow-hidden"
         style={{
           backgroundColor: isDarkMode ? '#1a1a1a' : undefined,
           borderColor: isDarkMode ? '#333333' : undefined
         }}
       >
         <CardContent className="flex-1 p-0 overflow-hidden min-h-0">
-          <ScrollArea className="h-full p-4" style={{ maxHeight: 'calc(100vh - 280px)' }}>
+          <ScrollArea className="h-full p-4">
             <div className="space-y-4">
               {/* Empty state title */}
               {messages.length === 0 && (
