@@ -3,6 +3,7 @@ import express, { type Request, Response, NextFunction } from "express";
 import { registerRoutes } from "./routes";
 import { setupVite, serveStatic, log } from "./vite";
 import { getSession } from "./auth";
+import { openGraphMiddleware } from "./opengraph";
 
 const app = express();
 
@@ -12,6 +13,9 @@ app.use(getSession());
 // Increase body size limit to 50MB for image uploads
 app.use(express.json({ limit: '50mb' }));
 app.use(express.urlencoded({ extended: false, limit: '50mb' }));
+
+// Add Open Graph middleware for social media crawlers
+app.use(openGraphMiddleware);
 
 app.use((req, res, next) => {
   const start = Date.now();

@@ -12,6 +12,26 @@ Business Rules: The system works EXCLUSIVELY with properties for sale. Rental pr
 
 ## Recent Updates
 
+### Open Graph Meta Tags Implementation (October 2025)
+Implemented dynamic Open Graph meta tags for property link previews:
+
+**Implementation:**
+- Created `server/opengraph.ts` module to handle meta tag injection
+- Detects social media crawlers (Facebook, WhatsApp, Twitter, LinkedIn, etc.)
+- Dynamically injects property-specific meta tags when crawlers access property pages
+
+**Features:**
+- Shows property title, description, and price in link preview
+- Displays the first property image as preview image
+- Supports both Open Graph and Twitter Card formats
+- Falls back to default site meta tags for non-property pages
+
+**Technical Details:**
+- Server-side injection approach to ensure crawler compatibility
+- No JavaScript execution required for crawlers
+- Preserves SEO and social sharing capabilities
+- Images displayed in 1200x630 format for optimal preview
+
 ### Property Active/Inactive Toggle System (October 2025)
 Implemented a visibility control system for properties:
 
