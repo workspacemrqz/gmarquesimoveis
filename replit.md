@@ -12,6 +12,28 @@ Business Rules: The system works EXCLUSIVELY with properties for sale. Rental pr
 
 ## Recent Updates
 
+### Property Active/Inactive Toggle System (October 2025)
+Implemented a visibility control system for properties:
+
+**Database:**
+- Added `is_active` boolean field to properties table (defaults to `true`)
+- All existing properties are active by default for backward compatibility
+
+**Backend API:**
+- New endpoint: `PATCH /api/admin/properties/:id/toggle-active` - Toggles property active status
+- Updated `GET /api/properties` to filter by `isActive` - Public pages show only active properties, admins see all
+
+**Admin Interface:**
+- Status indicator badge (green "Ativo" / gray "Inativo") displayed on each property card
+- Quick toggle button ("Ativar"/"Desativar") for instant status changes
+- Visual feedback with color-coded badges
+
+**Business Logic:**
+- Public pages (`/properties`, property details) only display active properties
+- Admin panel shows all properties regardless of status
+- Inactive properties remain in database but are hidden from public view
+- Easy reactivation without data loss
+
 ### Property Image Gallery Modernization (October 2025)
 The property detail page image gallery was redesigned for optimal viewing experience and modern aesthetics:
 

@@ -260,6 +260,11 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Property not found" });
       }
       
+      // Check if property is active for non-admin users
+      if (!req.session?.isAdmin && !property.isActive) {
+        return res.status(404).json({ message: "Property not found" });
+      }
+      
       res.json(property);
     } catch (error) {
       console.error("Error fetching property:", error);
@@ -288,8 +293,14 @@ export async function registerRoutes(app: Express): Promise<Server> {
         return res.status(404).json({ message: "Property not found" });
       }
       
+      // Check if property is active for non-admin users
+      if (!req.session?.isAdmin && !property.isActive) {
+        return res.status(404).json({ message: "Property not found" });
+      }
+      
       const limit = req.query.limit ? Number(req.query.limit) : 4;
-      const similar = await storage.getSimilarProperties(property.id, limit);
+      const activeOnly = !req.session?.isAdmin; // Only show active properties for non-admin users
+      const similar = await storage.getSimilarProperties(property.id, limit, activeOnly);
       res.json(similar);
     } catch (error) {
       console.error("Error fetching similar properties:", error);

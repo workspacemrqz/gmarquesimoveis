@@ -362,7 +362,7 @@ export class DatabaseStorage implements IStorage {
     return result[0];
   }
 
-  async getSimilarProperties(propertyId: string, limit = 4): Promise<Property[]> {
+  async getSimilarProperties(propertyId: string, limit = 4, activeOnly = false): Promise<Property[]> {
     const property = await this.getProperty(propertyId);
     if (!property) {
       return [];
@@ -380,6 +380,11 @@ export class DatabaseStorage implements IStorage {
 
     if (property.neighborhoodId) {
       conditions.push(eq(properties.neighborhoodId, property.neighborhoodId));
+    }
+
+    // Filter by active status for public pages
+    if (activeOnly) {
+      conditions.push(eq(properties.isActive, true));
     }
 
     const result = await db
