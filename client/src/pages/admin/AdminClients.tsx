@@ -15,6 +15,7 @@ import { insertClientSchema } from "@shared/schema";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { PhoneInput } from "@/components/ui/masked-input";
 import { AIClientDialog } from "@/components/AIClientDialog";
+import { formatPhone } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -423,7 +424,7 @@ export default function AdminClients() {
                           {client.phone && (
                             <div className="flex items-center gap-2">
                               <Phone className="h-4 w-4" />
-                              <span>{client.phone}</span>
+                              <span>{formatPhone(client.phone)}</span>
                             </div>
                           )}
                           {client.notes && (

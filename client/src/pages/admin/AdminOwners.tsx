@@ -15,6 +15,7 @@ import { insertOwnerSchema } from "@shared/schema";
 import { queryClient, apiRequest } from "@/lib/queryClient";
 import { PhoneInput } from "@/components/ui/masked-input";
 import { AIOwnerDialog } from "@/components/AIOwnerDialog";
+import { formatPhone } from "@/lib/utils";
 import { Badge } from "@/components/ui/badge";
 import { Command, CommandEmpty, CommandGroup, CommandInput, CommandItem, CommandList } from "@/components/ui/command";
 import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover";
@@ -450,7 +451,7 @@ export default function AdminOwners() {
                           {owner.phone && (
                             <div className="flex items-center gap-2">
                               <Phone className="h-4 w-4" />
-                              <span>{owner.phone}</span>
+                              <span>{formatPhone(owner.phone)}</span>
                             </div>
                           )}
                           {owner.notes && (
