@@ -26,7 +26,7 @@ import {
   X,
   Expand
 } from "lucide-react";
-import { Link, useRoute } from "wouter";
+import { Link, useRoute, useLocation } from "wouter";
 import type { Property, Neighborhood } from "@shared/schema";
 import { formatPrice, formatArea, getPropertyTypeLabel, getStatusLabel } from "@/lib/utils";
 import { Header } from "@/components/Header";
@@ -36,6 +36,7 @@ import { PropertyImageWithWatermark } from "@/components/PropertyImageWithWaterm
 
 export default function PropertyDetails() {
   const [, params] = useRoute("/imoveis/:id");
+  const [, setLocation] = useLocation();
   const propertyId = params?.id;
   const [selectedImage, setSelectedImage] = useState(0);
   const [isAutoPlay, setIsAutoPlay] = useState(false);
@@ -154,6 +155,14 @@ export default function PropertyDetails() {
     }
   };
 
+  const handleBack = () => {
+    if (window.history.length > 1) {
+      window.history.back();
+    } else {
+      setLocation("/imoveis");
+    }
+  };
+
   const images = property?.images && property.images.length > 0 ? property.images : [];
 
   return (
@@ -169,7 +178,7 @@ export default function PropertyDetails() {
               <Button 
                 className="bg-gradient-to-r from-accent to-accent/90 text-white border-0 text-sm md:text-base"
                 data-testid="button-back"
-                onClick={() => window.history.back()}
+                onClick={handleBack}
               >
                 <ArrowLeft className="h-4 w-4 mr-1 md:mr-2" />
                 Voltar
