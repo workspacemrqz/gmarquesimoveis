@@ -82,7 +82,9 @@ export function Footer() {
 
         <div className="border-t border-white/20 mt-8 pt-6 pb-6 text-center text-sm text-white/60">
           <Link href="/entrar">
-            <p className="cursor-pointer hover:text-white/80 transition-colors">&copy; {new Date().getFullYear()} {companyName}. Todos os direitos reservados.</p>
+            <p className="cursor-pointer hover:text-white/80 transition-colors">
+              &copy; {new Date().getFullYear()} {companyName}.<br className="sm:hidden" /> Todos os direitos reservados.
+            </p>
           </Link>
           <a 
             href="https://api.whatsapp.com/send/?phone=556281938192&text=Ol%C3%A1%21+Vim+atrav%C3%A9s+do+site+da+G+Marques+Im%C3%B3veis+e+gostaria+de+conhecer+mais+sobre+os+servi%C3%A7os+da+Evolut+IA.&type=phone_number&app_absent=0"
