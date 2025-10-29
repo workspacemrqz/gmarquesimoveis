@@ -943,6 +943,24 @@ export async function registerRoutes(app: Express): Promise<Server> {
     }
   });
 
+  app.patch("/api/admin/properties/:id/toggle-active", isAdmin, async (req, res) => {
+    try {
+      const property = await storage.getProperty(req.params.id);
+      if (!property) {
+        return res.status(404).json({ message: "Property not found" });
+      }
+      
+      const updatedProperty = await storage.updateProperty(req.params.id, {
+        isActive: !property.isActive
+      });
+      
+      res.json(updatedProperty);
+    } catch (error) {
+      console.error("Error toggling property active status:", error);
+      res.status(500).json({ message: "Failed to toggle property active status" });
+    }
+  });
+
   // Public Neighborhoods Routes
   app.get("/api/neighborhoods", async (req, res) => {
     try {
