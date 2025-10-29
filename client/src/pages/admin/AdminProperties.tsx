@@ -1181,7 +1181,7 @@ export default function AdminProperties() {
                             </div>
                           )}
                         </div>
-                        <div className="flex items-center justify-between gap-2 pt-3 border-t mb-3">
+                        <div className="flex items-center justify-between gap-2 pt-3 border-t mb-5">
                           <div className="flex items-center gap-2">
                             <span className="text-sm font-semibold">
                               Status:
