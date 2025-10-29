@@ -166,15 +166,14 @@ export default function PropertyDetails() {
         <div className="border-b">
           <div className="container mx-auto max-w-7xl px-3 md:px-4 py-3 md:py-4">
             <div className="flex items-center justify-between gap-2">
-              <Link href="/imoveis">
-                <Button 
-                  className="bg-gradient-to-r from-accent to-accent/90 text-white border-0 text-sm md:text-base"
-                  data-testid="button-back"
-                >
-                  <ArrowLeft className="h-4 w-4 mr-1 md:mr-2" />
-                  Voltar
-                </Button>
-              </Link>
+              <Button 
+                className="bg-gradient-to-r from-accent to-accent/90 text-white border-0 text-sm md:text-base"
+                data-testid="button-back"
+                onClick={() => window.history.back()}
+              >
+                <ArrowLeft className="h-4 w-4 mr-1 md:mr-2" />
+                Voltar
+              </Button>
               
               <Button 
                 variant="outline"
