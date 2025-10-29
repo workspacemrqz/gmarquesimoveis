@@ -676,7 +676,7 @@ export default function AdminIntelligence({ isDarkMode = false }: AdminIntellige
                   )}>
                     <div 
                       className={cn(
-                        "rounded-lg px-4 py-2.5 text-sm",
+                        "rounded-lg px-4 py-2.5 text-sm break-words",
                         message.role === "user" 
                           ? "bg-gradient-to-r from-[#387DF3] to-[#2054DB] text-white ml-auto"
                           : message.error
@@ -686,16 +686,20 @@ export default function AdminIntelligence({ isDarkMode = false }: AdminIntellige
                       style={{
                         backgroundColor: message.role !== "user" && !message.error && isDarkMode ? '#1a1a1a' : undefined,
                         color: message.role !== "user" && !message.error && isDarkMode ? '#FFFFFF' : undefined,
-                        borderColor: message.role !== "user" && !message.error && isDarkMode ? '#333333' : undefined
+                        borderColor: message.role !== "user" && !message.error && isDarkMode ? '#333333' : undefined,
+                        overflowWrap: 'break-word',
+                        wordBreak: 'break-word'
                       }}
                     >
                       {message.role === "user" ? (
                         <p className="whitespace-pre-wrap">{message.content}</p>
                       ) : (
                         <div 
-                          className="prose prose-sm max-w-none"
+                          className="prose prose-sm max-w-none break-words"
                           style={{
-                            color: isDarkMode ? '#FFFFFF' : undefined
+                            color: isDarkMode ? '#FFFFFF' : undefined,
+                            overflowWrap: 'break-word',
+                            wordBreak: 'break-word'
                           }}
                         >
                           <ReactMarkdown 
@@ -715,7 +719,7 @@ export default function AdminIntelligence({ isDarkMode = false }: AdminIntellige
                                       href={href} 
                                       target="_blank" 
                                       rel="noopener noreferrer"
-                                      className="text-accent hover:text-accent/80 underline font-medium"
+                                      className="text-accent hover:text-accent/80 underline font-medium break-words"
                                       style={{ color: isDarkMode ? '#FFFFFF' : undefined }}
                                       data-testid="link-property"
                                       {...props}
@@ -724,7 +728,7 @@ export default function AdminIntelligence({ isDarkMode = false }: AdminIntellige
                                     </a>
                                   );
                                 }
-                                return <a href={href} className="text-accent hover:text-accent/80 underline" style={{ color: isDarkMode ? '#FFFFFF' : undefined }} {...props}>{children}</a>;
+                                return <a href={href} className="text-accent hover:text-accent/80 underline break-words" style={{ color: isDarkMode ? '#FFFFFF' : undefined }} {...props}>{children}</a>;
                               },
                             }}
                           >
