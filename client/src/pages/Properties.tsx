@@ -197,6 +197,8 @@ export default function Properties() {
     const params = new URLSearchParams(window.location.search);
     const minPrice = params.get("minPrice") || "";
     const maxPrice = params.get("maxPrice") || "";
+    const page = params.get("page");
+    
     setFilters({
       propertyType: params.get("propertyType") || "",
       neighborhoodId: params.get("neighborhoodId") || "",
@@ -209,6 +211,13 @@ export default function Properties() {
       minPrice,
       maxPrice,
     });
+    
+    if (page) {
+      const pageNumber = parseInt(page, 10);
+      if (!isNaN(pageNumber) && pageNumber > 0) {
+        setCurrentPage(pageNumber);
+      }
+    }
   }, []);
 
   const { data, isLoading } = useQuery({
@@ -282,6 +291,19 @@ export default function Properties() {
     });
     setLocation(`/imoveis?${params.toString()}`, { replace: true });
   }, [filters, tempPriceFilters, setLocation]);
+
+  const updatePage = useCallback((newPage: number) => {
+    setCurrentPage(newPage);
+    
+    const params = new URLSearchParams();
+    Object.entries(filters).forEach(([key, value]) => {
+      if (value) params.append(key, value);
+    });
+    if (newPage > 1) {
+      params.append("page", newPage.toString());
+    }
+    setLocation(`/imoveis?${params.toString()}`, { replace: true });
+  }, [filters, setLocation]);
 
   const formatCurrency = (value: string): string => {
     const numbers = value.replace(/\D/g, '');
@@ -492,7 +514,7 @@ export default function Properties() {
                       <Button
                         variant="outline"
                         size="icon"
-                        onClick={() => setCurrentPage(prev => Math.max(1, prev - 1))}
+                        onClick={() => updatePage(Math.max(1, currentPage - 1))}
                         disabled={currentPage === 1}
                         data-testid="button-prev-page"
                       >
@@ -509,7 +531,7 @@ export default function Properties() {
                               <Button
                                 variant={currentPage === page ? "default" : "outline"}
                                 size="sm"
-                                onClick={() => setCurrentPage(page as number)}
+                                onClick={() => updatePage(page as number)}
                                 className="min-w-[40px]"
                                 data-testid={`button-page-${page}`}
                               >
@@ -531,7 +553,7 @@ export default function Properties() {
                       <Button
                         variant="outline"
                         size="icon"
-                        onClick={() => setCurrentPage(prev => Math.min(totalPages, prev + 1))}
+                        onClick={() => updatePage(Math.min(totalPages, currentPage + 1))}
                         disabled={currentPage === totalPages}
                         data-testid="button-next-page"
                       >
