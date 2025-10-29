@@ -442,6 +442,18 @@ export default function AdminProperties() {
     },
   });
 
+  const toggleActiveMutation = useMutation({
+    mutationFn: async (id: string) => {
+      await apiRequest("PATCH", `/api/admin/properties/${id}/toggle-active`, {});
+    },
+    onSuccess: () => {
+      queryClient.invalidateQueries({ queryKey: ["/api/properties"] });
+    },
+    onError: () => {
+      // Error toggling property active status
+    },
+  });
+
   const handleEdit = (property: Property) => {
     setEditingProperty(property);
     
@@ -1169,7 +1181,31 @@ export default function AdminProperties() {
                             </div>
                           )}
                         </div>
-                        <div className="flex gap-2 pt-3 border-t">
+                        <div className="flex items-center justify-between gap-2 pt-3 border-t mb-2">
+                          <span className="text-xs font-medium">
+                            Status:
+                          </span>
+                          <div className="flex items-center gap-2">
+                            <Badge
+                              variant={property.isActive ? "default" : "secondary"}
+                              className={property.isActive ? "bg-green-500 hover:bg-green-600" : "bg-gray-500 hover:bg-gray-600"}
+                              data-testid={`badge-status-${property.id}`}
+                            >
+                              {property.isActive ? "Ativo" : "Inativo"}
+                            </Badge>
+                            <Button
+                              variant="ghost"
+                              size="sm"
+                              onClick={() => toggleActiveMutation.mutate(property.id)}
+                              disabled={toggleActiveMutation.isPending}
+                              data-testid={`button-toggle-active-${property.id}`}
+                              className="h-7 px-2"
+                            >
+                              {property.isActive ? "Desativar" : "Ativar"}
+                            </Button>
+                          </div>
+                        </div>
+                        <div className="flex gap-2">
                           <Button
                             variant="outline"
                             size="sm"
