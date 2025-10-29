@@ -78,6 +78,7 @@ export const properties = pgTable("properties", {
   landArea: decimal("land_area", { precision: 10, scale: 2 }), // m²
   neighborhoodId: varchar("neighborhood_id").references(() => neighborhoods.id),
   isFeatured: boolean("is_featured").default(false),
+  isActive: boolean("is_active").default(true),
   images: text("images").array().default(sql`'{}'::text[]`), // Array of image URLs
   amenities: text("amenities").array().default(sql`'{}'::text[]`), // Array of amenities
   externalId: varchar("external_id", { length: 100 }), // ID from gmarquesimoveis.com.br
