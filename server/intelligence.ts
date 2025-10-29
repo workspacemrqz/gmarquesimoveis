@@ -620,7 +620,7 @@ export async function processUserMessage(
     const companyName = companySetting?.value || 'G Marques Imóveis';
     
     // Obter o domínio do site para usar nos links
-    const siteDomain = process.env.DOMAIN || 'localhost:3000';
+    const siteDomain = process.env.DOMAIN || 'gmarquesimoveis.com.br';
     
     let aiResponse: string;
     try {
