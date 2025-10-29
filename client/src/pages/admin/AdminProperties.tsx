@@ -1181,25 +1181,25 @@ export default function AdminProperties() {
                             </div>
                           )}
                         </div>
-                        <div className="flex items-center justify-between gap-2 pt-3 border-t mb-2">
-                          <span className="text-xs font-medium">
+                        <div className="flex items-center justify-between gap-2 pt-3 border-t mb-3">
+                          <span className="text-sm font-semibold">
                             Status:
                           </span>
-                          <div className="flex items-center gap-2">
+                          <div className="flex items-center gap-3">
                             <Badge
                               variant={property.isActive ? "default" : "secondary"}
-                              className={property.isActive ? "bg-green-500 hover:bg-green-600" : "bg-gray-500 hover:bg-gray-600"}
+                              className={`text-sm px-4 py-1.5 ${property.isActive ? "bg-green-500 hover:bg-green-600" : "bg-gray-500 hover:bg-gray-600"}`}
                               data-testid={`badge-status-${property.id}`}
                             >
-                              {property.isActive ? "Ativo" : "Inativo"}
+                              {property.isActive ? "ATIVO" : "INATIVO"}
                             </Badge>
                             <Button
-                              variant="ghost"
-                              size="sm"
+                              variant={property.isActive ? "destructive" : "default"}
+                              size="default"
                               onClick={() => toggleActiveMutation.mutate(property.id)}
                               disabled={toggleActiveMutation.isPending}
                               data-testid={`button-toggle-active-${property.id}`}
-                              className="h-7 px-2"
+                              className="h-9 px-4 font-medium"
                             >
                               {property.isActive ? "Desativar" : "Ativar"}
                             </Button>
