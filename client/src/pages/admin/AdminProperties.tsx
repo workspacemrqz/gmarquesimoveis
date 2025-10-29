@@ -1182,27 +1182,22 @@ export default function AdminProperties() {
                           )}
                         </div>
                         <div className="flex items-center justify-between gap-2 pt-3 border-t mb-3">
-                          <span className="text-sm font-semibold">
-                            Status:
-                          </span>
+                          <div className="flex items-center gap-2">
+                            <span className="text-sm font-semibold">
+                              Status:
+                            </span>
+                            <span className={`text-sm font-medium ${property.isActive ? "text-primary" : "text-muted-foreground"}`}>
+                              {property.isActive ? "Ativo" : "Inativo"}
+                            </span>
+                          </div>
                           <div className="flex items-center gap-3">
-                            <Badge
-                              variant={property.isActive ? "default" : "secondary"}
-                              className={`text-sm px-4 py-1.5 ${property.isActive ? "bg-green-500 hover:bg-green-600" : "bg-gray-500 hover:bg-gray-600"}`}
-                              data-testid={`badge-status-${property.id}`}
-                            >
-                              {property.isActive ? "ATIVO" : "INATIVO"}
-                            </Badge>
-                            <Button
-                              variant={property.isActive ? "destructive" : "default"}
-                              size="default"
-                              onClick={() => toggleActiveMutation.mutate(property.id)}
+                            <Switch
+                              checked={property.isActive || false}
+                              onCheckedChange={() => toggleActiveMutation.mutate(property.id)}
                               disabled={toggleActiveMutation.isPending}
-                              data-testid={`button-toggle-active-${property.id}`}
-                              className="h-9 px-4 font-medium"
-                            >
-                              {property.isActive ? "Desativar" : "Ativar"}
-                            </Button>
+                              data-testid={`switch-toggle-active-${property.id}`}
+                              className="data-[state=checked]:bg-primary data-[state=unchecked]:bg-gray-300 scale-110"
+                            />
                           </div>
                         </div>
                         <div className="flex gap-2">
