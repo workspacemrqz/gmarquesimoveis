@@ -219,6 +219,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
         bathrooms: req.query.bathrooms ? Number(req.query.bathrooms) : undefined,
         neighborhoodId: req.query.neighborhoodId as string | undefined,
         isFeatured: req.query.isFeatured === 'true' ? true : undefined,
+        isActive: req.session?.isAdmin ? undefined : true, // Only show active properties for public page
         page: req.query.page ? Number(req.query.page) : 1,
         limit: req.query.limit ? Number(req.query.limit) : 12,
       };

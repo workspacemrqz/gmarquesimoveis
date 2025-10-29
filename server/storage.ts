@@ -238,6 +238,7 @@ export class DatabaseStorage implements IStorage {
     bathrooms?: number;
     neighborhoodId?: string;
     isFeatured?: boolean;
+    isActive?: boolean;
     page?: number;
     limit?: number;
   }): Promise<{ properties: Property[]; total: number; page: number; totalPages: number }> {
@@ -270,6 +271,9 @@ export class DatabaseStorage implements IStorage {
     }
     if (filters?.isFeatured !== undefined) {
       conditions.push(eq(properties.isFeatured, filters.isFeatured));
+    }
+    if (filters?.isActive !== undefined) {
+      conditions.push(eq(properties.isActive, filters.isActive));
     }
     
     // Get total count
@@ -308,6 +312,7 @@ export class DatabaseStorage implements IStorage {
     bathrooms?: number;
     neighborhoodId?: string;
     isFeatured?: boolean;
+    isActive?: boolean;
   }): Promise<Property[]> {
     let query = db.select().from(properties);
     
@@ -335,6 +340,9 @@ export class DatabaseStorage implements IStorage {
     }
     if (filters?.isFeatured !== undefined) {
       conditions.push(eq(properties.isFeatured, filters.isFeatured));
+    }
+    if (filters?.isActive !== undefined) {
+      conditions.push(eq(properties.isActive, filters.isActive));
     }
     
     if (conditions.length > 0) {
